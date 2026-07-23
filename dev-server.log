@@ -1,0 +1,18 @@
+
+> umrohq@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.11 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.211.88.21:3000
+- Environments: .env.local
+✓ Ready in 2.7s
+
+○ Compiling / ...
+ GET / 200 in 12.9s (next.js: 5.1s, proxy.ts: 1370ms, application-code: 6.4s)
+ GET /paket 200 in 9.7s (next.js: 6.9s, proxy.ts: 362ms, application-code: 2.5s)
+⨯ upstream image response failed for https://images.unsplash.com/photo-1605806616949-1e87b487bc2a?w=800&h=500&fit=crop 404
+⨯ upstream image response failed for https://images.unsplash.com/photo-1586892478390-53a7af3d5f3b?w=800&h=500&fit=crop 404
+⨯ upstream image response failed for https://images.unsplash.com/photo-1542382226-115d9e24f84a?w=800&h=500&fit=crop 404
+[browser] Image with src "/assets/nama-logo.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. (file:///home/reja/umrohqu/.next/dev/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489:13)
+ GET / 200 in 1233ms (next.js: 68ms, proxy.ts: 74ms, application-code: 1092ms)

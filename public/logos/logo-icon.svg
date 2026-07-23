@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Green circular swoosh -->
+  <circle cx="100" cy="100" r="85" stroke="#10B981" stroke-width="12" opacity="0.3"/>
+  <path d="M50 100 C50 65, 75 40, 100 40 C130 40, 155 65, 155 100 C155 140, 130 165, 100 165 C60 165, 30 140, 30 100" 
+        stroke="#10B981" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.8"/>
+  
+  <!-- Kaaba -->
+  <rect x="70" y="75" width="60" height="55" rx="2" fill="#1a1a1a"/>
+  <rect x="70" y="75" width="60" height="8" fill="#10B981"/>
+  <rect x="70" y="83" width="60" height="3" fill="#F5F5F5"/>
+  <rect x="80" y="95" width="8" height="15" fill="#34D399" opacity="0.6"/>
+  <rect x="112" y="95" width="8" height="15" fill="#34D399" opacity="0.6"/>
+  <rect x="78" y="120" width="6" height="10" fill="#34D399" opacity="0.6"/>
+  <rect x="116" y="120" width="6" height="10" fill="#34D399" opacity="0.6"/>
+  <rect x="70" y="75" width="60" height="55" rx="2" fill="none" stroke="#333" stroke-width="1.5"/>
+</svg>

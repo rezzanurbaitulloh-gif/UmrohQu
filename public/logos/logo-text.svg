@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 50" fill="none">
+  <text x="0" y="38" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#0F172A" letter-spacing="-1">
+    Umr<tspan fill="#10B981">o</tspan>hQu
+  </text>
+  <!-- Crescent moon and star integrated in the 'o' -->
+  <circle cx="72" cy="20" r="10" fill="#10B981" opacity="0.2"/>
+  <path d="M80 18 C76 12, 68 12, 64 18 C60 24, 64 32, 72 32 C68 28, 68 22, 72 18" fill="#10B981"/>
+  <polygon points="58,10 60,16 66,16 61,20 63,26 58,22 53,26 55,20 50,16 56,16" fill="#10B981" opacity="0.9"/>
+</svg>
