@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import { getPublicUrl } from '@/lib/supabase/storage'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -82,7 +83,7 @@ export default function LoginPage() {
         <div className="flex justify-center mb-8">
           <Link href="/">
             <Image
-              src="/assets/logoo.png"
+              src={getPublicUrl('logos/logo-icon.png')}
               alt="UmrohQu"
               width={48}
               height={48}

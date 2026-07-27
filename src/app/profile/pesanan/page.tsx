@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
+import { getPublicUrl } from '@/lib/supabase/storage'
 
 // Mock data untuk pesanan
 const mockOrders = {
@@ -22,7 +23,7 @@ const mockOrders = {
       price: 25000000,
       status: 'Belum Dibayar',
       paymentDeadline: '2026-07-30',
-      image: '/assets/katalogpaket.png'
+      image: getPublicUrl('packages/katalogpaket.png')
     },
     {
       id: 'ORD-2026-002',

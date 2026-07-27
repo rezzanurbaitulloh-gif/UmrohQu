@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Star, Quote, ChevronRight, Play, BadgeCheck, Users, Calendar, Plane } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { getPublicUrl } from '@/lib/supabase/storage'
 
 export const metadata: Metadata = {
   title: 'UmrohQu - Premium Umrah & Haji Marketplace',
@@ -93,13 +94,6 @@ function PackageCard({ pkg }: { pkg: typeof samplePackages[0] }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="relative">
-        <Image
-          src={pkg.gambar_url}
-          alt={pkg.nama}
-          width={600}
-          height={400}
-          className="w-full h-48 object-cover"
-        />
         <div className="absolute top-3 left-3 bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full">
           {pkg.maskapai}
         </div>
@@ -195,7 +189,7 @@ export default function LandingPage() {
          {/* Background image */}
          <div className="absolute inset-0">
            <Image
-             src="/assets/makkah.png"
+             src={getPublicUrl('backgrounds/makkah.png')}
              alt="Masjidil Haram Makkah"
              fill
              className="object-cover"

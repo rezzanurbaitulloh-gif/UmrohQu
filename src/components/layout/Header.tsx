@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Search, Globe, Menu, X, Users, Calendar, Clock, BookOpen, Plane, User, ChevronDown } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { getPublicUrl } from '@/lib/supabase/storage'
 import { toast } from 'sonner'
 
 const navLinks = [
@@ -77,14 +78,14 @@ export function Header() {
         <Link href="/" className="flex items-center">
           <div className="flex items-center gap-0">
             <Image
-              src="/assets/logoo.png"
+              src={getPublicUrl('logos/logo-icon.png')}
               alt="UmrohQu Icon"
               width={80}
               height={80}
               className="object-contain"
             />
             <Image
-              src="/assets/nama-logo.png"
+              src={getPublicUrl('logos/logo-text.png')}
               alt="UmrohQu"
               width={160}
               height={36}

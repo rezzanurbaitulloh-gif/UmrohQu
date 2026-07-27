@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Search, Users, Calendar, Plane, ChevronDown, ArrowRight, ArrowLeft, Star } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { getPublicUrl } from '@/lib/supabase/storage'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -16,7 +17,7 @@ const sampleGroupTickets = [
   {
     id: '1',
     maskapai: 'Garuda Indonesia',
-    logo: '/assets/garuda-logo.png',
+    logo: getPublicUrl('airlines/garuda.png'),
     keberangkatan: 'Jakarta (CGK)',
     tujuan: 'Jeddah (JED)',
     tanggal: '2024-10-15',
@@ -29,7 +30,7 @@ const sampleGroupTickets = [
   {
     id: '2',
     maskapai: 'Saudia',
-    logo: '/assets/saudia-logo.png',
+    logo: getPublicUrl('airlines/saudia.png'),
     keberangkatan: 'Surabaya (SUB)',
     tujuan: 'Madinah (MED)',
     tanggal: '2024-10-18',
@@ -42,7 +43,7 @@ const sampleGroupTickets = [
   {
     id: '3',
     maskapai: 'Lion Air',
-    logo: '/assets/lion-air-logo.png',
+    logo: getPublicUrl('airlines/lion.png'),
     keberangkatan: 'Jakarta (CGK)',
     tujuan: 'Jeddah (JED)',
     tanggal: '2024-10-20',
@@ -55,7 +56,7 @@ const sampleGroupTickets = [
   {
     id: '4',
     maskapai: 'Emirates',
-    logo: '/assets/emirates-logo.png',
+    logo: getPublicUrl('airlines/emirates.png'),
     keberangkatan: 'Jakarta (CGK)',
     tujuan: 'Jeddah (JED)',
     tanggal: '2024-10-22',
@@ -68,7 +69,7 @@ const sampleGroupTickets = [
   {
     id: '5',
     maskapai: 'Qatar Airways',
-    logo: '/assets/qatar-logo.png',
+    logo: getPublicUrl('airlines/qatar.png'),
     keberangkatan: 'Bandung (BDO)',
     tujuan: 'Madinah (MED)',
     tanggal: '2024-10-25',
@@ -124,7 +125,7 @@ export default function TiketGroupPage() {
       <section className="relative bg-gradient-to-r from-green-600 to-green-700 py-20 px-4">
         <div className="absolute inset-0">
           <Image
-            src="/assets/makkah.png"
+            src={getPublicUrl('backgrounds/makkah.png')}
             alt="Makkah background"
             fill
             className="object-cover opacity-10"

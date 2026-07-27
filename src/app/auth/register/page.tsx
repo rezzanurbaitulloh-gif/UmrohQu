@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Mail, Lock, Eye, EyeOff, User, Phone, UserPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
+import { getPublicUrl } from '@/lib/supabase/storage'
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -16,7 +18,13 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Link href="/">
-            <img src="/assets/logoo.png" alt="UmrohQu" className="w-12 h-12 object-contain" />
+            <Image
+              src={getPublicUrl('logos/logo-icon.png')}
+              alt="UmrohQu"
+              width={48}
+              height={48}
+              className="object-contain"
+            />
           </Link>
         </div>
 

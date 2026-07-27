@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { getPublicUrl } from '@/lib/supabase/storage'
 
 const companyLinks = [
   { href: '/tentang', label: 'Tentang Kami' },
@@ -23,7 +24,7 @@ export function Footer() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/assets/masjid.png"
+          src={getPublicUrl('backgrounds/masjid.png')}
           alt="Masjid background"
           fill
           className="object-cover opacity-5"
@@ -38,14 +39,14 @@ export function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-0 mb-6">
               <Image
-                src="/assets/logoo.png"
+                src={getPublicUrl('logos/logo-icon.png')}
                 alt="UmrohQu Icon"
                 width={80}
                 height={80}
                 className="object-contain"
               />
               <Image
-                src="/assets/nama-logo.png"
+                src={getPublicUrl('logos/logo-text.png')}
                 alt="UmrohQu"
                 width={160}
                 height={36}
