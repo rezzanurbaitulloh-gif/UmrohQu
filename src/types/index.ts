@@ -1,172 +1,279 @@
-export type UserRole = 'super_admin' | 'support' | 'billing' | 'travel_vendor' | 'jamaah'
-
-export type BookingStatus = 'pending' | 'confirmed' | 'paid' | 'processing' | 'completed' | 'cancelled'
-export type PaymentMethod = 'dp' | 'full'
-export type PaymentStatus = 'pending' | 'verified' | 'rejected'
-
-export interface Profile {
-  id: string
-  email: string
-  full_name: string
-  phone: string
-  role: UserRole
-  avatar_url: string | null
-  created_at: string
-  updated_at: string
+// Database types will be defined here since database.types.ts doesn't exist
+export interface Database {
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          full_name: string | null;
+          email: string | null;
+          phone: string | null;
+          role: "JAMAAH" | "TRAVEL" | "STAFF" | "SUPER_ADMIN";
+          is_public: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          full_name?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          role?: "JAMAAH" | "TRAVEL" | "STAFF" | "SUPER_ADMIN";
+          is_public?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          full_name?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          role?: "JAMAAH" | "TRAVEL" | "STAFF" | "SUPER_ADMIN";
+          is_public?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      travels: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          description: string | null;
+          logo_url: string | null;
+          banner_url: string | null;
+          address: string | null;
+          ppiu_number: string | null;
+          license_status: "PENDING" | "ACTIVE" | "SUSPENDED" | "REJECTED";
+          setup_fee_status: "UNPAID" | "PENDING" | "PAID";
+          setup_fee_amount: number;
+          custom_domain: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          description?: string | null;
+          logo_url?: string | null;
+          banner_url?: string | null;
+          address?: string | null;
+          ppiu_number?: string | null;
+          license_status?: "PENDING" | "ACTIVE" | "SUSPENDED" | "REJECTED";
+          setup_fee_status?: "UNPAID" | "PENDING" | "PAID";
+          setup_fee_amount?: number;
+          custom_domain?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          slug?: string;
+          description?: string | null;
+          logo_url?: string | null;
+          banner_url?: string | null;
+          address?: string | null;
+          ppiu_number?: string | null;
+          license_status?: "PENDING" | "ACTIVE" | "SUSPENDED" | "REJECTED";
+          setup_fee_status?: "UNPAID" | "PENDING" | "PAID";
+          setup_fee_amount?: number;
+          custom_domain?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      packages: {
+        Row: {
+          id: string;
+          travel_id: string;
+          title: string;
+          description: string | null;
+          price_per_pax: number;
+          departure_date: string;
+          return_date: string | null;
+          duration_days: number;
+          remaining_quota: number;
+          total_quota: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          travel_id: string;
+          title: string;
+          description?: string | null;
+          price_per_pax: number;
+          departure_date: string;
+          return_date?: string | null;
+          duration_days: number;
+          remaining_quota: number;
+          total_quota: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          travel_id?: string;
+          title?: string;
+          description?: string | null;
+          price_per_pax?: number;
+          departure_date?: string;
+          return_date?: string | null;
+          duration_days?: number;
+          remaining_quota?: number;
+          total_quota?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      bookings: {
+        Row: {
+          id: string;
+          code: string;
+          user_id: string;
+          package_id: string;
+          travel_id: string;
+          total_amount: number;
+          status: "PENDING" | "PAID" | "CANCELLED" | "COMPLETED" | "REFUNDED";
+          channel: "main" | "subdomain";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          user_id: string;
+          package_id: string;
+          travel_id: string;
+          total_amount: number;
+          status?: "PENDING" | "PAID" | "CANCELLED" | "COMPLETED" | "REFUNDED";
+          channel?: "main" | "subdomain";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          user_id?: string;
+          package_id?: string;
+          travel_id?: string;
+          total_amount?: number;
+          status?: "PENDING" | "PAID" | "CANCELLED" | "COMPLETED" | "REFUNDED";
+          channel?: "main" | "subdomain";
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+    };
+    Functions: {
+      get_admin_dashboard_kpi: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          total_gmv: number;
+          total_members: number;
+          total_vendors: number;
+          active_vendors: number;
+          pending_vendors: number;
+          total_packages: number;
+        };
+      };
+      get_monthly_transactions: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          month: string;
+          revenue: number;
+          volume: number;
+        }[];
+      };
+      get_channel_distribution: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          name: string;
+          value: number;
+        }[];
+      };
+    };
+  };
 }
 
-export interface TravelVendor {
-  id: string
-  user_id: string
-  nama_brand: string
-  ppiu_number: string
-  subdomain: string | null
-  custom_domain: string | null
-  logo_url: string | null
-  description: string | null
-  status_verifikasi: 'pending' | 'verified' | 'rejected'
-  rating: number
-  jumlah_terjual: number
-  created_at: string
-}
+export type Profile = {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  role: "JAMAAH" | "TRAVEL" | "STAFF" | "SUPER_ADMIN";
+  is_public: boolean;
+  created_at: string;
+  updated_at: string;
+};
 
-export interface Package {
-  id: string
-  vendor_id: string
-  nama: string
-  deskripsi: string
-  harga: number
-  durasi_hari: number
-  tanggal_keberangkatan: string
-  kota_keberangkatan: string
-  gambar_url: string
-  featured: boolean
-  slug: string
-  ppiu_number: string
-  maskapai: string
-  hotel_bintang: number
-  rating: number
-  jumlah_terjual: number
-  is_promo: boolean
-  promo_harga: number | null
-  created_at: string
-}
+export type Travel = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  logo_url: string | null;
+  banner_url: string | null;
+  address: string | null;
+  ppiu_number: string | null;
+  license_status: "PENDING" | "ACTIVE" | "SUSPENDED" | "REJECTED";
+  setup_fee_status: "UNPAID" | "PENDING" | "PAID";
+  setup_fee_amount: number;
+  custom_domain: string | null;
+  created_at: string;
+  updated_at: string;
+};
 
-export interface PackagePhoto {
-  id: string
-  package_id: string
-  photo_url: string
-  urutan: number
-}
+export type Package = {
+  id: string;
+  travel_id: string;
+  title: string;
+  description: string | null;
+  price_per_pax: number;
+  departure_date: string;
+  return_date: string | null;
+  duration_days: number;
+  remaining_quota: number;
+  total_quota: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
 
-export interface Itinerary {
-  id: string
-  package_id: string
-  hari_ke: number
-  judul: string
-  deskripsi: string
-  gambar_url: string | null
-}
+export type Booking = {
+  id: string;
+  code: string;
+  user_id: string;
+  package_id: string;
+  travel_id: string;
+  total_amount: number;
+  status: "PENDING" | "PAID" | "CANCELLED" | "COMPLETED" | "REFUNDED";
+  channel: "main" | "subdomain";
+  created_at: string;
+  updated_at: string;
+};
 
-export interface Hotel {
-  id: string
-  package_id: string
-  nama: string
-  kota: string
-  bintang: number
-  deskripsi: string
-  gambar_url: string | null
-  jarak_ke_masjid: string | null
-}
+export type AdminDashboardKPI = {
+  total_gmv: number;
+  total_members: number;
+  total_vendors: number;
+  active_vendors: number;
+  pending_vendors: number;
+  total_packages: number;
+};
 
-export interface Flight {
-  id: string
-  package_id: string
-  maskapai: string
-  kode_penerbangan: string
-  dari: string
-  ke: string
-  waktu_berangkat: string
-  waktu_tiba: string
-}
+export type MonthlyTransaction = {
+  month: string;
+  revenue: number;
+  volume: number;
+};
 
-export interface Booking {
-  id: string
-  package_id: string
-  customer_id: string | null
-  nama_lengkap: string
-  email: string
-  whatsapp: string
-  total_harga: number
-  dp: number
-  metode_bayar: PaymentMethod
-  status: BookingStatus
-  nomor_booking: string
-  bank_tujuan: string | null
-  created_at: string
-}
-
-export interface Jamaah {
-  id: string
-  booking_id: string
-  nama_lengkap: string
-  nomor_paspor: string
-  masa_berlaku_paspor: string
-  hubungan: string
-}
-
-export interface Review {
-  id: string
-  package_id: string
-  user_id: string | null
-  rating: number
-  komentar: string
-  created_at: string
-}
-
-export interface Follow {
-  id: string
-  follower_id: string
-  following_id: string
-  tipe: 'travel' | 'jamaah'
-  created_at: string
-}
-
-export interface Bid {
-  id: string
-  package_id: string
-  nominal_bid: number
-  status: 'active' | 'paused' | 'expired'
-  expired_at: string
-  created_at: string
-}
-
-export interface SiteSetting {
-  id: string
-  key: string
-  value: string
-  updated_at: string
-}
-
-export interface Newsletter {
-  id: string
-  email: string
-  created_at: string
-}
-
-export interface MasterData {
-  id: string
-  tipe: 'maskapai' | 'hotel_makkah' | 'hotel_madinah' | 'kota_keberangkatan'
-  nama: string
-  nilai: string
-  created_at: string
-}
-
-export interface PaymentProof {
-  id: string
-  booking_id: string
-  gambar_url: string
-  nominal: number
-  status_verifikasi: PaymentStatus
-  created_at: string
-}
+export type ChannelDistribution = {
+  name: string;
+  value: number;
+};

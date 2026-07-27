@@ -20,32 +20,36 @@ export default function PrayerTimesClient() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [locationInfo, setLocationInfo] = useState('Jakarta, Indonesia')
+  const [cityInput, setCityInput] = useState('Jakarta')
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
-  const cities = [
-    { name: 'Jakarta', country: 'Indonesia' },
-    { name: 'Surabaya', country: 'Indonesia' },
-    { name: 'Bandung', country: 'Indonesia' },
-    { name: 'Yogyakarta', country: 'Indonesia' },
-    { name: 'Medan', country: 'Indonesia' },
-    { name: 'Makkah', country: 'Saudi Arabia' },
-    { name: 'Madinah', country: 'Saudi Arabia' },
-    { name: 'Jeddah', country: 'Saudi Arabia' },
-    { name: 'Riyadh', country: 'Saudi Arabia' },
-    { name: 'Dubai', country: 'United Arab Emirates' }
+  // Common Indonesian cities for suggestions
+  const commonCities = [
+    'Jakarta', 'Surabaya', 'Bandung', 'Yogyakarta', 'Medan',
+    'Semarang', 'Makassar', 'Palembang', 'Denpasar', 'Balikpapan',
+    'Padang', 'Manado', 'Pontianak', 'Banda Aceh', 'Jayapura',
+    'Malang', 'Pekanbaru', 'Batam', 'Bogor', 'Depok',
+    'Tangerang', 'Bekasi', 'Samarinda', 'Banjarbaru', 'Mataram'
   ]
 
   const fetchPrayerTimes = async () => {
+    if (!selectedCity) {
+      setError('Silakan masukkan nama kota')
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     setError(null)
 
     try {
-      const city = cities.find(c => c.name === selectedCity)
-      if (!city) {
-        throw new Error('Kota tidak ditemukan')
-      }
+      // Get current date or selected date
+      const dateObj = selectedDate ? new Date(selectedDate) : new Date()
+      const dateString = dateObj.toISOString().split('T')[0]
 
       const response = await fetch(
-        `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city.name)}&country=${encodeURIComponent(city.country)}&method=2`
+        `https://api.aladhan.com/v1/timingsByCity/${dateString}?city=${encodeURIComponent(selectedCity)}&country=Indonesia&method=2`
       )
 
       if (!response.ok) {
@@ -58,7 +62,7 @@ export default function PrayerTimesClient() {
       const timings = data.data.timings
       const date = data.data.date.readable
 
-      setLocationInfo(`${city.name}, ${city.country}`)
+      setLocationInfo(`${selectedCity}, Indonesia`)
       setPrayerTimes([
         { name: 'Imsak', time: timings.Imsak },
         { name: 'Subuh', time: timings.Fajr },
@@ -77,6 +81,33 @@ export default function PrayerTimesClient() {
     }
   }
 
+  const handleCityInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setCityInput(value)
+
+    if (value.length > 2) {
+      // Filter suggestions based on input
+      const filtered = commonCities.filter(city =>
+        city.toLowerCase().includes(value.toLowerCase())
+      )
+      setSuggestions(filtered)
+      setShowSuggestions(true)
+    } else {
+      setShowSuggestions(false)
+    }
+  }
+
+  const handleSuggestionClick = (city: string) => {
+    setCityInput(city)
+    setSelectedCity(city)
+    setShowSuggestions(false)
+  }
+
+  const handleSearch = () => {
+    setSelectedCity(cityInput)
+    fetchPrayerTimes()
+  }
+
   const calculateDhuha = (sunriseTime: string) => {
     // Dhuha is approximately 20 minutes after sunrise
     const [hours, minutes] = sunriseTime.split(':').map(Number)
@@ -88,39 +119,54 @@ export default function PrayerTimesClient() {
   }
 
   useEffect(() => {
+    // Set default city to Jakarta on first load
+    setSelectedCity('Jakarta')
+    setCityInput('Jakarta')
     fetchPrayerTimes()
-  }, [])
+  }, [selectedDate])
 
   return (
     <>
-      {/* Hero Section */}
-      <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
-          <Clock className="w-5 h-5 text-primary" />
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Jadwal Sholat</h1>
-        </div>
-        <p className="text-sm text-slate-600 max-w-2xl mx-auto">
-          Dapatkan jadwal sholat akurat untuk kota Anda. Waktu sholat diperbarui setiap hari berdasarkan lokasi dan perhitungan astronomi.
-        </p>
-      </div>
+       {/* Hero Section */}
+       <div className="text-center mb-12">
+         <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
+           <Clock className="w-5 h-5 text-primary" />
+           <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Jadwal Sholat Indonesia</h1>
+         </div>
+         <p className="text-sm text-slate-600 max-w-2xl mx-auto">
+           Dapatkan jadwal sholat akurat untuk seluruh kota di Indonesia. Waktu sholat diperbarui secara real-time berdasarkan perhitungan astronomi.
+         </p>
+       </div>
 
       {/* Search and Location */}
       <div className="bg-slate-50 rounded-2xl p-6 md:p-8 mb-12">
         <div className="flex flex-col md:flex-row gap-4 items-center">
-          <div className="flex-1">
+          <div className="flex-1 relative">
             <label htmlFor="city" className="block text-sm font-medium text-slate-700 mb-1">
-              Pilih Kota
+              Cari Kota di Indonesia
             </label>
-            <select
+            <input
               id="city"
-              value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
+              type="text"
+              value={cityInput}
+              onChange={handleCityInputChange}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="Masukkan nama kota..."
               className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              {cities.map((city) => (
-                <option key={city.name} value={city.name}>{city.name}</option>
-              ))}
-            </select>
+            />
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                {suggestions.map((city) => (
+                  <div
+                    key={city}
+                    onClick={() => handleSuggestionClick(city)}
+                    className="px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer"
+                  >
+                    {city}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex-1">
             <label htmlFor="date" className="block text-sm font-medium text-slate-700 mb-1">
@@ -135,7 +181,7 @@ export default function PrayerTimesClient() {
             />
           </div>
           <button
-            onClick={fetchPrayerTimes}
+            onClick={handleSearch}
             disabled={loading}
             className="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition-colors mt-6 md:mt-0 disabled:opacity-50 disabled:cursor-not-allowed"
           >
