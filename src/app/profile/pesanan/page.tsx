@@ -33,7 +33,7 @@ const mockOrders = {
       price: 18000000,
       status: 'Belum Dibayar',
       paymentDeadline: '2026-08-10',
-      image: '/assets/katalogpaket.png'
+      image: getPublicUrl('packages/katalogpaket.png')
     }
   ],
   diproses: [
@@ -45,7 +45,7 @@ const mockOrders = {
       price: 22000000,
       status: 'Diproses',
       paymentDeadline: 'Sudah Dibayar',
-      image: '/assets/katalogpaket.png'
+      image: getPublicUrl('packages/katalogpaket.png')
     }
   ],
   selesai: [
@@ -57,7 +57,7 @@ const mockOrders = {
       price: 15000000,
       status: 'Selesai',
       paymentDeadline: 'Selesai',
-      image: '/assets/katalogpaket.png'
+      image: getPublicUrl('packages/katalogpaket.png')
     }
   ],
   kadaluwarsa: [
@@ -69,7 +69,7 @@ const mockOrders = {
       price: 30000000,
       status: 'Kadaluwarsa',
       paymentDeadline: '2026-07-15',
-      image: '/assets/katalogpaket.png'
+      image: getPublicUrl('packages/katalogpaket.png')
     }
   ]
 }

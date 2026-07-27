@@ -122,18 +122,18 @@ export default function TiketGroupPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-green-600 to-green-700 py-20 px-4">
-        <div className="absolute inset-0">
+      <section className="relative min-h-[400px] flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
           <Image
-            src={getPublicUrl('backgrounds/makkah.png')}
+            src="/assets/makkah.png"
             alt="Makkah background"
             fill
-            className="object-cover opacity-10"
+            className="object-cover"
+            priority
+            sizes="100vw"
           />
-        </div>
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Tiket Group Umroh & Haji</h1>
-          <p className="text-lg text-white/90 mb-8">Temukan tiket group terbaik untuk perjalanan ibadah Anda</p>
+          <div className="absolute inset-0 bg-black/50" />
         </div>
       </section>
 

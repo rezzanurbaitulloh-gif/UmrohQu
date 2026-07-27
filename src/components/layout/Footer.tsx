@@ -12,7 +12,7 @@ const companyLinks = [
 ]
 
 const resourcesLinks = [
-  { href: '/tentang?tab=faq', label: 'Pusat Bantuan' },
+  { href: '/faq', label: 'Pusat Bantuan' },
   { href: '/cara-kerja', label: 'Panduan Perjalanan' },
   { href: '/blog', label: 'Blog & Artikel' },
   { href: '/testimonials', label: 'Testimoni Jamaah' },
@@ -21,16 +21,16 @@ const resourcesLinks = [
 export function Footer() {
   return (
     <footer className="relative bg-white text-slate-800 overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src={getPublicUrl('backgrounds/masjid.png')}
-          alt="Masjid background"
-          fill
-          className="object-cover opacity-5"
-          quality={85}
-        />
-      </div>
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/assets/masjid.png"
+            alt="Masjid background"
+            fill
+            className="object-cover opacity-5"
+            quality={85}
+          />
+        </div>
 
       {/* Content */}
       <div className="relative z-10 px-6 py-16 md:py-20 lg:px-12 xl:px-16 max-w-7xl mx-auto">
@@ -39,18 +39,18 @@ export function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-0 mb-6">
               <Image
-                src={getPublicUrl('logos/logo-icon.png')}
-                alt="UmrohQu Icon"
+                src="/assets/logo.jpg"
+                alt="UmrohQu Logo"
                 width={80}
                 height={80}
-                className="object-contain"
+                className="object-contain bg-transparent"
               />
               <Image
-                src={getPublicUrl('logos/logo-text.png')}
+                src="/assets/nama-logo.jpg"
                 alt="UmrohQu"
                 width={160}
                 height={36}
-                className="object-contain -ml-2"
+                className="object-contain -ml-2 bg-transparent"
               />
             </div>
 
