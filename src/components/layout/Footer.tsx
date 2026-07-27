@@ -3,18 +3,18 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
-const quickLinks = [
-  { href: '/tentang', label: 'Privacy Policy' },
-  { href: '/tentang', label: 'Terms of Service' },
-  { href: '/kemitraan', label: 'Partner With Us' },
-  { href: '/cari', label: 'Sitemap' },
+const companyLinks = [
+  { href: '/tentang', label: 'Tentang Kami' },
+  { href: '/tentang?tab=privacy', label: 'Kebijakan Privasi' },
+  { href: '/tentang?tab=terms', label: 'Syarat & Ketentuan' },
+  { href: '/kemitraan', label: 'Menjadi Mitra' },
 ]
 
-const supportLinks = [
-  { href: '/tentang', label: 'FAQ' },
-  { href: '/tentang', label: 'Contact Support' },
-  { href: '/cara-kerja', label: 'Travel Guides' },
-  { href: '/tentang', label: 'Safety Updates' },
+const resourcesLinks = [
+  { href: '/tentang?tab=faq', label: 'Pusat Bantuan' },
+  { href: '/cara-kerja', label: 'Panduan Perjalanan' },
+  { href: '/blog', label: 'Blog & Artikel' },
+  { href: '/testimonials', label: 'Testimoni Jamaah' },
 ]
 
 export function Footer() {
@@ -87,11 +87,11 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Company */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-800 mb-4">Quick Links</h3>
+            <h3 className="text-sm font-semibold text-slate-800 mb-4">Perusahaan</h3>
             <ul className="space-y-3">
-  {quickLinks.map((link) => (
+  {companyLinks.map((link) => (
     <li key={`${link.href}-${link.label}`}>
       <Link
         href={link.href}
@@ -104,11 +104,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Resources */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-800 mb-4">Support</h3>
+            <h3 className="text-sm font-semibold text-slate-800 mb-4">Sumber Daya</h3>
             <ul className="space-y-3">
-  {supportLinks.map((link) => (
+  {resourcesLinks.map((link) => (
     <li key={`${link.href}-${link.label}`}>
       <Link
         href={link.href}

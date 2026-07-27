@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 
 const navLinks = [
-  { href: '/', label: 'Tiket Group', icon: <Users size={16} /> },
+  { href: '/tiket-group', label: 'Tiket Group', icon: <Users size={16} /> },
   { href: '/paket', label: 'Paket Umroh', icon: <Calendar size={16} /> },
   { href: '/cari', label: 'Paket LA', icon: <Plane size={16} /> },
   { href: '/jadwal-sholat', label: 'Jadwal Sholat', icon: <Clock size={16} /> },
