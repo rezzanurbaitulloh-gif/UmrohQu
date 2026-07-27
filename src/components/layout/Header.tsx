@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Search, Globe, Menu, X, Users, Calendar, Clock, BookOpen, Plane, User } from 'lucide-react'
+import { Search, Globe, Menu, X, Users, Calendar, Clock, BookOpen, Plane, User, ChevronDown } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 
@@ -19,8 +19,31 @@ const navLinks = [
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false)
+  const languageDropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const supabase = createClient()
+
+  // Close language dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
+        setLanguageDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  const changeLanguage = (lang: string) => {
+    // TODO: Implement language change functionality
+    console.log(`Language changed to: ${lang}`)
+    setLanguageDropdownOpen(false)
+    toast.success(`Bahasa diubah ke ${lang === 'id' ? 'Indonesia' : lang === 'en' ? 'English' : 'العربية'}`)
+  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -89,9 +112,42 @@ export function Header() {
           <button className="p-2 text-slate-500 hover:text-primary transition-colors">
             <Search size={18} />
           </button>
-          <button className="p-2 text-slate-500 hover:text-primary transition-colors">
-            <Globe size={18} />
-          </button>
+
+          {/* Language Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setLanguageDropdownOpen(!languageDropdownOpen)}
+              className="p-2 text-slate-500 hover:text-primary transition-colors flex items-center gap-1"
+            >
+              <Globe size={18} />
+              <ChevronDown size={14} />
+            </button>
+
+            {languageDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-slate-100 z-50">
+                <div className="py-1">
+                  <button
+                    onClick={() => changeLanguage('id')}
+                    className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                  >
+                    <span>🇮🇩</span> Indonesia
+                  </button>
+                  <button
+                    onClick={() => changeLanguage('en')}
+                    className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                  >
+                    <span>🇬🇧</span> English
+                  </button>
+                  <button
+                    onClick={() => changeLanguage('ar')}
+                    className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                  >
+                    <span>🇸🇦</span> العربية
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {user ? (
             <div className="flex items-center gap-3">
@@ -118,6 +174,42 @@ export function Header() {
                 Register
               </Link>
             </>
+          )}
+        </div>
+
+        {/* Language Dropdown for Mobile */}
+        <div className="md:hidden relative" ref={languageDropdownRef}>
+          <button
+            onClick={() => setLanguageDropdownOpen(!languageDropdownOpen)}
+            className="p-2 text-slate-600 flex items-center gap-1"
+          >
+            <Globe size={18} />
+            <ChevronDown size={14} />
+          </button>
+
+          {languageDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-slate-100 z-50">
+              <div className="py-1">
+                <button
+                  onClick={() => changeLanguage('id')}
+                  className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                >
+                  <span>🇮🇩</span> Indonesia
+                </button>
+                <button
+                  onClick={() => changeLanguage('en')}
+                  className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                >
+                  <span>🇬🇧</span> English
+                </button>
+                <button
+                  onClick={() => changeLanguage('ar')}
+                  className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                >
+                  <span>🇸🇦</span> العربية
+                </button>
+              </div>
+            </div>
           )}
         </div>
 
