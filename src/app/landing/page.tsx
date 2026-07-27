@@ -192,16 +192,16 @@ export default function LandingPage() {
 
       {/* ========== HERO SECTION (Single Background with makkah.png) ========== */}
       <section className="relative min-h-[600px] md:min-h-[650px] overflow-hidden">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/desainumroh/makkah.png"
-            alt="Masjidil Haram Makkah"
-            fill
-            className="object-cover"
-            priority
-            sizes="100vw"
-          />
+         {/* Background image */}
+         <div className="absolute inset-0">
+           <Image
+             src="/assets/makkah.png"
+             alt="Masjidil Haram Makkah"
+             fill
+             className="object-cover"
+             priority
+             sizes="100vw"
+           />
           {/* Overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40"></div>
         </div>

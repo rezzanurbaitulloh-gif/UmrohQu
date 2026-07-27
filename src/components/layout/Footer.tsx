@@ -19,14 +19,14 @@ const supportLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative bg-slate-900 text-white overflow-hidden">
+    <footer className="relative bg-white text-slate-800 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/desainumroh/makkah.png"
-          alt="Makkah background"
+          src="/assets/masjid.png"
+          alt="Masjid background"
           fill
-          className="object-cover opacity-10"
+          className="object-cover opacity-5"
           quality={85}
         />
       </div>
@@ -36,15 +36,21 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo and Social */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-0 mb-6">
               <Image
                 src="/assets/logoo.png"
-                alt="UmrohQu Logo"
-                width={40}
-                height={40}
+                alt="UmrohQu Icon"
+                width={80}
+                height={80}
                 className="object-contain"
               />
-              <span className="text-xl font-bold">UmrohQu</span>
+              <Image
+                src="/assets/nama-logo.png"
+                alt="UmrohQu"
+                width={160}
+                height={36}
+                className="object-contain -ml-2"
+              />
             </div>
 
             <div className="flex gap-4 mb-6">
@@ -85,16 +91,16 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-slate-800 mb-4">Quick Links</h3>
             <ul className="space-y-3">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-400 hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+  {quickLinks.map((link) => (
+    <li key={`${link.href}-${link.label}`}>
+      <Link
+        href={link.href}
+        className="text-sm text-slate-400 hover:text-white transition-colors"
+      >
+        {link.label}
+      </Link>
+    </li>
+  ))}
             </ul>
           </div>
 
@@ -102,16 +108,16 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-slate-800 mb-4">Support</h3>
             <ul className="space-y-3">
-              {supportLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-400 hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+  {supportLinks.map((link) => (
+    <li key={`${link.href}-${link.label}`}>
+      <Link
+        href={link.href}
+        className="text-sm text-slate-400 hover:text-white transition-colors"
+      >
+        {link.label}
+      </Link>
+    </li>
+  ))}
             </ul>
           </div>
 
