@@ -78,18 +78,19 @@ export function Header() {
         <Link href="/" className="flex items-center">
           <div className="flex items-center gap-0">
             <Image
-              src="/assets/logo.jpg"
+              src="/assets/logo.png"
               alt="UmrohQu Logo"
               width={80}
               height={80}
-              className="object-contain bg-transparent"
+              className="object-contain"
             />
             <Image
-              src="/assets/nama-logo.jpg"
+              src="/assets/nama-logo.png"
               alt="UmrohQu"
               width={160}
-              height={36}
-              className="object-contain -ml-2 bg-transparent"
+              height={47}
+              className="object-contain -ml-2"
+              style={{ height: 'auto' }}
             />
           </div>
         </Link>

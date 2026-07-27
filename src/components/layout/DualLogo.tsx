@@ -1,4 +1,4 @@
-import Image from 'next/image'
+ import Image from 'next/image'
 
 interface DualLogoProps {
   iconOnly?: boolean
@@ -11,11 +11,11 @@ export function DualLogo({ iconOnly, textOnly, className = '' }: DualLogoProps) 
     return (
       <div className={`flex items-center ${className}`}>
         <Image
-          src="/assets/logo.jpg"
+          src="/assets/logo.png"
           alt="UmrohQu Logo"
           width={40}
           height={40}
-          className="bg-transparent"
+          className="object-contain"
         />
       </div>
     )
@@ -25,11 +25,12 @@ export function DualLogo({ iconOnly, textOnly, className = '' }: DualLogoProps) 
     return (
       <div className={`flex items-center ${className}`}>
         <Image
-          src="/assets/nama-logo.jpg"
+          src="/assets/nama-logo.png"
           alt="UmrohQu"
           width={140}
-          height={30}
-          className="bg-transparent"
+          height={41}
+          className="object-contain"
+          style={{ height: 'auto' }}
         />
       </div>
     )
@@ -39,20 +40,21 @@ export function DualLogo({ iconOnly, textOnly, className = '' }: DualLogoProps) 
     <div className={`flex items-center gap-2 ${className}`}>
       <div className="flex items-center">
         <Image
-          src="/assets/logo.jpg"
+          src="/assets/logo.png"
           alt="UmrohQu Logo"
           width={36}
           height={36}
-          className="bg-transparent"
+          className="object-contain"
         />
       </div>
       <div className="flex items-center">
         <Image
-          src="/assets/nama-logo.jpg"
+          src="/assets/nama-logo.png"
           alt="UmrohQu"
           width={130}
-          height={28}
-          className="bg-transparent"
+          height={39}
+          className="object-contain"
+          style={{ height: 'auto' }}
         />
       </div>
     </div>

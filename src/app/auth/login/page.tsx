@@ -83,11 +83,11 @@ export default function LoginPage() {
          <div className="flex justify-center mb-8">
            <Link href="/">
              <Image
-               src="/assets/logo.jpg"
+               src="/assets/logo.png"
                alt="UmrohQu Logo"
                width={48}
                height={48}
-               className="object-contain bg-transparent"
+               className="object-contain"
              />
            </Link>
          </div>

@@ -4,8 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Search, Users, Calendar, Plane, ChevronDown, ArrowRight, ArrowLeft, Star } from 'lucide-react'
-import { Header } from '@/components/layout/Header'
-import { Footer } from '@/components/layout/Footer'
 import { getPublicUrl } from '@/lib/supabase/storage'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -119,8 +117,6 @@ export default function TiketGroupPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Header />
-
       {/* Hero Section */}
       <section className="relative min-h-[400px] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
@@ -319,8 +315,6 @@ export default function TiketGroupPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }
