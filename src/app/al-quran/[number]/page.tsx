@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: SurahPageProps): Promise<Meta
   const resolvedParams = await params;
   // Fetch surah info for metadata
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/al-quran/surat/${resolvedParams.number}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/al-quran/surat/${resolvedParams.number}`)
     const data = await response.json()
 
     if (data.error) {

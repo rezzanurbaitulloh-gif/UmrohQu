@@ -114,6 +114,16 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
+          // UI/marketing fields (optional on insert)
+          is_promo?: boolean;
+          featured?: boolean;
+          hotel_bintang?: number;
+          promo_harga?: number;
+          gambar_url?: string;
+          nama?: string;
+          durasi_hari?: number;
+          kota_keberangkatan?: string;
+          slug?: string;
         };
         Update: {
           id?: string;
@@ -129,6 +139,16 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
+          // UI/marketing fields (optional on update)
+          is_promo?: boolean;
+          featured?: boolean;
+          hotel_bintang?: number;
+          promo_harga?: number;
+          gambar_url?: string;
+          nama?: string;
+          durasi_hari?: number;
+          kota_keberangkatan?: string;
+          slug?: string;
         };
       };
       bookings: {
@@ -243,6 +263,16 @@ export type Package = {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  // Additional marketing/UI fields
+  is_promo: boolean;
+  featured: boolean;
+  hotel_bintang: number;
+  promo_harga: number;
+  gambar_url: string;
+  nama: string;
+  durasi_hari: number;
+  kota_keberangkatan: string;
+  slug: string;
 };
 
 export type Booking = {
@@ -276,4 +306,23 @@ export type MonthlyTransaction = {
 export type ChannelDistribution = {
   name: string;
   value: number;
+};
+
+// Newsletter subscription
+export type Newsletter = {
+  id: string;
+  email: string;
+  created_at: string;
+};
+
+// User type for Supabase auth user object
+export type User = {
+  id: string;
+  email?: string | null;
+  phone?: string | null;
+  user_metadata?: {
+    full_name?: string | null;
+    avatar_url?: string | null;
+  } | null;
+  role?: "JAMAAH" | "TRAVEL" | "STAFF" | "SUPER_ADMIN";
 };

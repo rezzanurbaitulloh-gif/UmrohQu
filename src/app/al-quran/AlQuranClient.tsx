@@ -1,10 +1,12 @@
 'use client'
 
-import Link from 'next/link'
-import { BookOpen, Search } from 'lucide-react'
-import { Header } from '@/components/layout/Header'
-import { Footer } from '@/components/layout/Footer'
-import { useState, useEffect } from 'react'
+import Link from 'next/link';
+import { BookOpen, Search } from 'lucide-react';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import ErrorBoundary from '@/components/ui/error-boundary';
+import LoadingSpinner from '@/components/ui/loading-spinner';
+import { useState, useEffect } from 'react';
 
 interface Surah {
   number: number
@@ -113,8 +115,9 @@ export default function AlQuranClient() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-white">
+        <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20">
         {/* Hero Section */}
@@ -187,11 +190,9 @@ export default function AlQuranClient() {
           </div>
         </div>
 
-        {/* Loading State */}
         {loading && (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="ml-3 text-slate-600">Memuat daftar surah...</span>
+            <LoadingSpinner text="Memuat daftar surah..." />
           </div>
         )}
 
@@ -235,7 +236,8 @@ export default function AlQuranClient() {
         )}
       </main>
 
-      <Footer />
-    </div>
-  )
+        <Footer />
+      </div>
+    </ErrorBoundary>
+  );
 }

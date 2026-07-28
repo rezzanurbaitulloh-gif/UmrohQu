@@ -1,10 +1,13 @@
 'use client'
 
-import Link from 'next/link'
-import { BookOpen, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react'
-import { Header } from '@/components/layout/Header'
-import { Footer } from '@/components/layout/Footer'
-import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { BookOpen, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import ErrorBoundary from '@/components/ui/error-boundary';
+import LoadingSpinner from '@/components/ui/loading-spinner';
+import { useState, useEffect, useRef } from 'react';
 
 interface Verse {
   number: number
@@ -28,6 +31,10 @@ interface SurahClientProps {
 }
 
 export default function SurahClient({ params }: SurahClientProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const isAutoPlayFromURL = searchParams.get('autoplay') === 'true'
+
   const [surah, setSurah] = useState<Surah | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -44,9 +51,37 @@ export default function SurahClient({ params }: SurahClientProps) {
     fetchSurah()
   }, [params.number])
 
+  // Effect untuk Auto-Play dari Surah Sebelumnya
+  useEffect(() => {
+    if (surah && isAutoPlayFromURL && surah.versesData.length > 0) {
+      // Putar otomatis ayat pertama saat berpindah surah
+      setPlayingVerse(surah.versesData[0].number)
+    }
+  }, [surah, isAutoPlayFromURL])
+
+  // Effect untuk Menjalankan Audio setiap kali playingVerse berubah
+  useEffect(() => {
+    if (playingVerse !== null && audioRefs.current[playingVerse]) {
+      // Hentikan semua audio lain yang mungkin sedang menyala
+      Object.keys(audioRefs.current).forEach((key) => {
+        const vNum = Number(key)
+        if (vNum !== playingVerse && audioRefs.current[vNum]) {
+          audioRefs.current[vNum]?.pause()
+        }
+      })
+
+      // Putar audio ayat yang aktif
+      const activeAudio = audioRefs.current[playingVerse]
+      if (activeAudio) {
+        activeAudio.play().catch((err) => console.error("Gagal memutar audio:", err))
+      }
+    }
+  }, [playingVerse])
+
   const fetchSurah = async () => {
     setLoading(true)
     setError(null)
+    setPlayingVerse(null)
 
     try {
       // Validate surah number first
@@ -60,7 +95,6 @@ export default function SurahClient({ params }: SurahClientProps) {
 
       if (!response.ok) {
         if (response.status === 404) {
-          // Try to get the error details from response
           let errorDetails = ''
           try {
             const errorData = await response.json()
@@ -82,12 +116,9 @@ export default function SurahClient({ params }: SurahClientProps) {
       // Handle different API response structures
       let surahData = data.data
 
-      // Jika data.data adalah objek dengan properti data (struktur dari equran.id)
       if (data.data.data && typeof data.data.data === 'object') {
         surahData = data.data.data
-      }
-      // Jika data.data adalah objek langsung (struktur dari api.quran.gading.dev)
-      else if (typeof data.data === 'object' && !Array.isArray(data.data)) {
+      } else if (typeof data.data === 'object' && !Array.isArray(data.data)) {
         surahData = data.data
       }
 
@@ -106,7 +137,7 @@ export default function SurahClient({ params }: SurahClientProps) {
           number: verse.nomorAyat || verse.number,
           arabic: verse.teksArab || verse.arabic || verse.text,
           translation: verse.teksIndonesia || verse.translation || verse.idn,
-          audio: verse.audio?.['01'] || verse.audio?.['05'] || verse.audio || '', // Use available audio
+          audio: verse.audio?.['01'] || verse.audio?.['05'] || verse.audio || '',
           tafsir: verse.tafsir?.teks || verse.tafsir || ''
         })) : []
       }
@@ -114,7 +145,6 @@ export default function SurahClient({ params }: SurahClientProps) {
       setSurah(mappedSurah)
     } catch (err) {
       console.error('Error fetching surah:', err)
-      // Fallback to local data if API fails
       const fallbackSurah: Surah = {
         number: 1,
         name: 'Al-Fatihah',
@@ -146,23 +176,31 @@ export default function SurahClient({ params }: SurahClientProps) {
       }
       setPlayingVerse(null)
     } else {
-      // Stop any currently playing audio
-      if (playingVerse !== null && audioRefs.current[playingVerse]) {
-        audioRefs.current[playingVerse]?.pause()
-        audioRefs.current[playingVerse] = null
-      }
-
-      // Start new audio
+      // Switch playing verse
       setPlayingVerse(verseNumber)
-      if (audioRefs.current[verseNumber]) {
-        audioRefs.current[verseNumber]?.play()
-      }
     }
   }
 
-  const handleAudioEnded = (verseNumber: number) => {
-    setPlayingVerse(null)
-    setAudioProgress(prev => ({...prev, [verseNumber]: 0}))
+  // --- FUNGSI UTAMA AUTO-PLAY KETIKA AUDIO 1 AYAT SELESAI ---
+  const handleAudioEnded = (currentVerseNumber: number) => {
+    setAudioProgress(prev => ({ ...prev, [currentVerseNumber]: 0 }))
+
+    if (!surah) return
+
+    // Cari posisi index ayat saat ini
+    const currentIndex = surah.versesData.findIndex(v => v.number === currentVerseNumber)
+
+    if (currentIndex !== -1 && currentIndex < surah.versesData.length - 1) {
+      // 1. Jika masih ada ayat selanjutnya di surah ini -> Lanjut ke ayat berikutnya
+      const nextVerse = surah.versesData[currentIndex + 1]
+      setPlayingVerse(nextVerse.number)
+    } else if (currentIndex === surah.versesData.length - 1) {
+      // 2. Jika ini adalah ayat TERAKHIR dalam surah -> Pindah ke Surah Selanjutnya
+      setPlayingVerse(null)
+      if (nextSurah) {
+        router.push(`/al-quran/${nextSurah}?autoplay=true`)
+      }
+    }
   }
 
   const handleAudioTimeUpdate = (verseNumber: number, e: React.SyntheticEvent<HTMLAudioElement>) => {
@@ -176,10 +214,7 @@ export default function SurahClient({ params }: SurahClientProps) {
       <div className="min-h-screen bg-white">
         <Header />
         <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-20">
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="ml-3 text-slate-600">Memuat surah...</span>
-          </div>
+          <LoadingSpinner text="Memuat surah..." />
         </main>
         <Footer />
       </div>
@@ -215,130 +250,132 @@ export default function SurahClient({ params }: SurahClientProps) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-white">
+        <Header />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-20">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
-            <BookOpen className="w-5 h-5 text-primary" />
-            <h1 className="text-xl md:text-2xl font-bold text-slate-900">
-              Surah {surah.name} ({surah.arabic})
-            </h1>
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-20">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
+              <BookOpen className="w-5 h-5 text-primary" />
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900">
+                Surah {surah.name} ({surah.arabic})
+              </h1>
+            </div>
+            <p className="text-sm text-slate-600">
+              Surah ke-{surah.number} • {surah.verses} ayat • {surah.revelation}
+            </p>
           </div>
-          <p className="text-sm text-slate-600">
-            Surah ke-{surah.number} • {surah.verses} ayat • {surah.revelation}
-          </p>
-        </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between mb-8">
-          {previousSurah ? (
-            <Link
-              href={`/al-quran/${previousSurah}`}
-              className="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Surah Sebelumnya
-            </Link>
-          ) : (
-            <div></div>
-          )}
-          {nextSurah ? (
-            <Link
-              href={`/al-quran/${nextSurah}`}
-              className="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-colors"
-            >
-              Surah Selanjutnya
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          ) : (
-            <div></div>
-          )}
-        </div>
+          {/* Navigation */}
+          <div className="flex items-center justify-between mb-8">
+            {previousSurah ? (
+              <Link
+                href={`/al-quran/${previousSurah}`}
+                className="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Surah Sebelumnya
+              </Link>
+            ) : (
+              <div></div>
+            )}
+            {nextSurah ? (
+              <Link
+                href={`/al-quran/${nextSurah}`}
+                className="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-colors"
+              >
+                Surah Selanjutnya
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <div></div>
+            )}
+          </div>
 
-        {/* Surah Content */}
-        <div className="bg-slate-50 rounded-2xl p-6 md:p-8">
-          <div className="space-y-8">
-            {surah.versesData.map((verse) => (
-              <div key={verse.number} className="border-b border-slate-200 pb-6 last:border-b-0 last:pb-0">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="text-2xl md:text-3xl font-arabic text-right mb-4 leading-relaxed">
-                      {verse.arabic}
-                    </div>
-                    <div className="text-sm text-slate-600 mb-3 leading-relaxed">
-                      {verse.translation}
-                    </div>
-                    <div className="text-xs text-slate-400 mb-3">
-                      {surah.name} • Ayat {verse.number}
-                    </div>
-
-                    {/* Audio Player */}
-                    {verse.audio && (
-                      <div className="flex items-center gap-3 mt-2">
-                        <button
-                          onClick={() => toggleAudio(verse.number)}
-                          className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center hover:bg-primary/20 transition-colors"
-                        >
-                          {playingVerse === verse.number ? (
-                            <Pause className="w-4 h-4 text-primary fill-primary" />
-                          ) : (
-                            <Play className="w-4 h-4 text-primary fill-primary" />
-                          )}
-                        </button>
-                        <div className="flex-1 h-1 bg-slate-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-primary"
-                            style={{ width: `${audioProgress[verse.number] || 0}%` }}
-                          ></div>
-                        </div>
-                        <audio
-                          ref={(el) => {
-                            if (el) audioRefs.current[verse.number] = el
-                          }}
-                          src={verse.audio}
-                          onEnded={() => handleAudioEnded(verse.number)}
-                          onTimeUpdate={(e) => handleAudioTimeUpdate(verse.number, e)}
-                        />
+          {/* Surah Content */}
+          <div className="bg-slate-50 rounded-2xl p-6 md:p-8">
+            <div className="space-y-8">
+              {surah.versesData.map((verse) => (
+                <div key={verse.number} className={`border-b border-slate-200 pb-6 last:border-b-0 last:pb-0 transition-all rounded-xl p-3 ${playingVerse === verse.number ? 'bg-emerald-50/70 border-emerald-300' : ''}`}>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="text-2xl md:text-3xl font-arabic text-right mb-4 leading-relaxed">
+                        {verse.arabic}
                       </div>
-                    )}
+                      <div className="text-sm text-slate-600 mb-3 leading-relaxed">
+                        {verse.translation}
+                      </div>
+                      <div className="text-xs text-slate-400 mb-3">
+                        {surah.name} • Ayat {verse.number}
+                      </div>
+
+                      {/* Audio Player */}
+                      {verse.audio && (
+                        <div className="flex items-center gap-3 mt-2">
+                          <button
+                            onClick={() => toggleAudio(verse.number)}
+                            className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center hover:bg-primary/20 transition-colors"
+                          >
+                            {playingVerse === verse.number ? (
+                              <Pause className="w-4 h-4 text-primary fill-primary" />
+                            ) : (
+                              <Play className="w-4 h-4 text-primary fill-primary" />
+                            )}
+                          </button>
+                          <div className="flex-1 h-1 bg-slate-200 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-primary transition-all duration-100"
+                              style={{ width: `${audioProgress[verse.number] || 0}%` }}
+                            ></div>
+                          </div>
+                          <audio
+                            ref={(el) => {
+                              if (el) audioRefs.current[verse.number] = el
+                            }}
+                            src={verse.audio}
+                            onEnded={() => handleAudioEnded(verse.number)}
+                            onTimeUpdate={(e) => handleAudioTimeUpdate(verse.number, e)}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-8">
-          {previousSurah ? (
-            <Link
-              href={`/al-quran/${previousSurah}`}
-              className="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Surah Sebelumnya
-            </Link>
-          ) : (
-            <div></div>
-          )}
-          {nextSurah ? (
-            <Link
-              href={`/al-quran/${nextSurah}`}
-              className="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-colors"
-            >
-              Surah Selanjutnya
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          ) : (
-            <div></div>
-          )}
-        </div>
-      </main>
+          {/* Navigation */}
+          <div className="flex items-center justify-between mt-8">
+            {previousSurah ? (
+              <Link
+                href={`/al-quran/${previousSurah}`}
+                className="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Surah Sebelumnya
+              </Link>
+            ) : (
+              <div></div>
+            )}
+            {nextSurah ? (
+              <Link
+                href={`/al-quran/${nextSurah}`}
+                className="flex items-center gap-2 text-sm text-primary hover:text-primary-dark transition-colors"
+              >
+                Surah Selanjutnya
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        </main>
 
-      <Footer />
-    </div>
-  )
+        <Footer />
+      </div>
+    </ErrorBoundary>
+  );
 }

@@ -1,12 +1,13 @@
  import Image from 'next/image'
 
 interface DualLogoProps {
-  iconOnly?: boolean
-  textOnly?: boolean
-  className?: string
+  iconOnly?: boolean;
+  textOnly?: boolean;
+  showText?: boolean;
+  className?: string;
 }
 
-export function DualLogo({ iconOnly, textOnly, className = '' }: DualLogoProps) {
+export function DualLogo({ iconOnly, textOnly, showText = true, className = '' }: DualLogoProps) {
   if (iconOnly) {
     return (
       <div className={`flex items-center ${className}`}>
@@ -18,7 +19,7 @@ export function DualLogo({ iconOnly, textOnly, className = '' }: DualLogoProps) 
           className="object-contain"
         />
       </div>
-    )
+    );
   }
 
   if (textOnly) {
@@ -33,7 +34,7 @@ export function DualLogo({ iconOnly, textOnly, className = '' }: DualLogoProps) 
           style={{ height: 'auto' }}
         />
       </div>
-    )
+    );
   }
 
   return (
@@ -47,16 +48,18 @@ export function DualLogo({ iconOnly, textOnly, className = '' }: DualLogoProps) 
           className="object-contain"
         />
       </div>
-      <div className="flex items-center">
-        <Image
-          src="/assets/nama-logo.png"
-          alt="UmrohQu"
-          width={130}
-          height={39}
-          className="object-contain"
-          style={{ height: 'auto' }}
-        />
-      </div>
+      {showText && (
+        <div className="flex items-center">
+          <Image
+            src="/assets/nama-logo.png"
+            alt="UmrohQu"
+            width={130}
+            height={39}
+            className="object-contain"
+            style={{ height: 'auto' }}
+          />
+        </div>
+      )}
     </div>
-  )
+  );
 }

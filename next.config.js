@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
     remotePatterns: [
       {
@@ -22,19 +21,14 @@ const nextConfig: NextConfig = {
         pathname: '**',
       },
     ],
-    // Allow unoptimized for local assets (JPG/PNG from design)
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
-    // Add custom quality settings
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60,
-    // Add custom qualities
-    qualities: [75, 85],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // Add custom quality support
+    imageSizes: [16, 32, 48, 96, 128, 256, 384],
     loader: 'default',
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

@@ -1,6 +1,7 @@
-import { Slider as SliderPrimitive } from "@base-ui/react/slider"
+"use client";
 
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
 function Slider({
   className,
@@ -9,44 +10,55 @@ function Slider({
   min = 0,
   max = 100,
   ...props
-}: SliderPrimitive.Root.Props) {
+}: React.ComponentProps<"input">) {
+  const numMin = Number(min);
+  const numMax = Number(max);
   const _values = Array.isArray(value)
     ? value
     : Array.isArray(defaultValue)
       ? defaultValue
-      : [min, max]
+      : [numMin, numMax];
+
+  const minVal = Number(_values[0] ?? numMin);
+  const maxVal = Number(_values[1] ?? numMax);
+
+  if (_values.length === 2) {
+    const left = ((minVal - numMin) / (numMax - numMin)) * 100;
+    const width = ((maxVal - minVal) / (numMax - numMin)) * 100;
+
+    return (
+      <div className={cn("relative w-full", className)} {...props}>
+        <div className="relative h-2 w-full rounded-full bg-slate-200">
+          <div
+            className="absolute h-full rounded-full bg-emerald-600"
+            style={{ left: `${left}%`, width: `${width}%` }}
+          />
+        </div>
+        <input
+          type="range"
+          min={numMin}
+          max={numMax}
+          value={minVal}
+          readOnly
+          className="absolute inset-0 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-600"
+        />
+      </div>
+    );
+  }
 
   return (
-    <SliderPrimitive.Root
-      className={cn("data-horizontal:w-full data-vertical:h-full", className)}
-      data-slot="slider"
-      defaultValue={defaultValue}
-      value={value}
-      min={min}
-      max={max}
-      thumbAlignment="edge"
+    <input
+      type="range"
+      min={numMin}
+      max={numMax}
+      value={minVal}
+      className={cn(
+        "w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-600",
+        className
+      )}
       {...props}
-    >
-      <SliderPrimitive.Control className="relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col">
-        <SliderPrimitive.Track
-          data-slot="slider-track"
-          className="relative grow overflow-hidden rounded-full bg-muted select-none data-horizontal:h-1 data-horizontal:w-full data-vertical:h-full data-vertical:w-1"
-        >
-          <SliderPrimitive.Indicator
-            data-slot="slider-range"
-            className="bg-primary select-none data-horizontal:h-full data-vertical:w-full"
-          />
-        </SliderPrimitive.Track>
-        {Array.from({ length: _values.length }, (_, index) => (
-          <SliderPrimitive.Thumb
-            data-slot="slider-thumb"
-            key={index}
-            className="relative block size-3 shrink-0 rounded-full border border-ring bg-white ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
-          />
-        ))}
-      </SliderPrimitive.Control>
-    </SliderPrimitive.Root>
-  )
+    />
+  );
 }
 
-export { Slider }
+export { Slider };

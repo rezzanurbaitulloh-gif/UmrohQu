@@ -72,7 +72,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
             {pkg.is_promo && pkg.promo_harga ? (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-400 line-through">
-                  Rp {pkg.harga.toLocaleString('id-ID')}
+                  Rp {pkg.price_per_pax.toLocaleString('id-ID')}
                 </span>
                 <span className="text-sm font-bold text-green-600">
                   Rp {pkg.promo_harga.toLocaleString('id-ID')}
@@ -80,7 +80,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
               </div>
             ) : (
               <span className="text-sm font-bold text-green-600">
-                Rp {pkg.harga.toLocaleString('id-ID')}
+                Rp {pkg.price_per_pax.toLocaleString('id-ID')}
               </span>
             )}
           </div>

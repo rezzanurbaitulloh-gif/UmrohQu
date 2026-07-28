@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Search, Globe, Menu, X, Users, Calendar, Clock, BookOpen, Plane, User, ChevronDown } from 'lucide-react'
+import { Search, Globe, Menu, X, Users, Calendar, Clock, BookOpen, Plane, User as UserIcon, ChevronDown } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { getPublicUrl } from '@/lib/supabase/storage'
 import { toast } from 'sonner'
+import type { User as AppUser } from '@/types'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
 
 const navLinks = [
   { href: '/tiket-group', label: 'Tiket Group', icon: <Users size={16} /> },
@@ -17,13 +19,15 @@ const navLinks = [
   { href: '/al-quran', label: 'Al-Quran', icon: <BookOpen size={16} /> },
 ]
 
+// Singleton Supabase client to avoid creating new instances on every render
+const supabaseClient = createClient()
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<SupabaseUser | null>(null)
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false)
   const languageDropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
-  const supabase = createClient()
 
   // Close language dropdown when clicking outside
   useEffect(() => {
@@ -40,36 +44,43 @@ export function Header() {
   }, [])
 
   const changeLanguage = (lang: string) => {
-    // TODO: Implement language change functionality
-    console.log(`Language changed to: ${lang}`)
-    setLanguageDropdownOpen(false)
-    toast.success(`Bahasa diubah ke ${lang === 'id' ? 'Indonesia' : lang === 'en' ? 'English' : 'العربية'}`)
+    // Log the selected language (placeholder for actual implementation)
+    console.log(`Language changed to: ${lang}`);
+    
+    // Close the dropdown
+    setLanguageDropdownOpen(false);
+    
+    // Show a toast notification
+    toast.success(`Bahasa diubah ke ${lang === 'id' ? 'Indonesia' : lang === 'en' ? 'English' : 'العربية'}`);
+    
+    // TODO: Implement a proper language change solution (e.g., i18n context, state management, or URL parameter)
+    // Example: router.push(`?lang=${lang}`);
   }
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await supabaseClient.auth.getUser()
       setUser(user)
     }
 
     getUser()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
-      await supabase.auth.signOut()
+      await supabaseClient.auth.signOut()
       router.refresh()
       toast.success('Anda telah logout')
     } catch (error) {
       toast.error('Terjadi kesalahan saat logout')
     }
-  }
+  }, [router])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-xl">
@@ -157,8 +168,8 @@ export function Header() {
                 href="/profile"
                 className="flex items-center gap-2 text-sm text-slate-600 hover:text-primary transition-colors px-3 py-1.5 font-medium"
               >
-                <User size={16} />
-                {user.user_metadata?.full_name || user.email || 'Profile'}
+                <UserIcon size={16} />
+                {user?.user_metadata?.full_name || user.email || 'Profile'}
               </Link>
             </div>
           ) : (
@@ -245,8 +256,8 @@ export function Header() {
                   href="/profile"
                   className="text-sm text-slate-600 hover:text-primary flex items-center gap-2"
                 >
-                  <User size={16} />
-                  {user.user_metadata?.full_name || user.email || 'Profile'}
+                  <UserIcon size={16} />
+                  {user?.user_metadata?.full_name || user.email || 'Profile'}
                 </Link>
               ) : (
                 <>
